@@ -43,7 +43,7 @@ class CustomScreen(Screen):
     def check_account(self, instance):
         phone_number = self.phone_number_input.text
         try:
-            response = requests.post('http://localhost:5000/check_account', json={'phone_number': phone_number})
+            response = requests.post('https://mock-server-atvi.onrender.com//check_account', json={'phone_number': phone_number})
             if response.ok:
                 total_amount = response.json().get('amount', 0)
                 popup = Popup(title='Account Balance',
@@ -64,7 +64,7 @@ class CustomScreen(Screen):
         amount = self.amount_input.text
         # Send this data to your Flask server
         try:
-            response = requests.post('http://localhost:5000/charge_account', json={'phone_number': phone_number, 'amount': amount})
+            response = requests.post('https://mock-server-atvi.onrender.com//charge_account', json={'phone_number': phone_number, 'amount': amount})
             if response.ok:
                 # Display a popup for successful charge
                 self.show_popup('Success', 'Account charged successfully!')

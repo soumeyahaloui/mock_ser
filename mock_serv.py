@@ -24,6 +24,8 @@ def home():
 def charge_account():
     data = request.json
     phone_number = data['phone_number']
+    connection = None
+
     try:
         amount = float(data['amount'])
     except ValueError:
@@ -59,7 +61,8 @@ def charge_account():
 def check_account():
     data = request.json
     phone_number = data['phone_number']
-    
+    connection = None
+
     try:
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
