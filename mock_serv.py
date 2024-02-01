@@ -2,24 +2,25 @@ from flask import Flask, jsonify, request
 import mysql.connector
 from mysql.connector import Error
 from time import sleep
+import os  # Import os module to access environment variables
+
+# Database configuration (use environment variables)
+db_config = {
+    'host': os.getenv('DB_HOST', ''),  # Replace 'default_host' with your default or leave blank
+    'database': os.getenv('DB_NAME', ''),  # Replace 'default_database' with your default or leave blank
+    'user': os.getenv('DB_USER', ''),  # Replace 'default_user' with your default or leave blank
+    'password': os.getenv('DB_PASSWORD', ''),  # Replace 'default_password' with your default or leave blank
+    'port': os.getenv('DB_PORT', '3306')  # Default MySQL port; adjust if necessary
+}
 
 app = Flask(__name__)
-
-# Database configuration (use your actual credentials)
-db_config = {
-    'host': 'sql11.freesqldatabase.com',
-    'database': 'sql11681109',
-    'user': 'sql11681109',
-    'password': 'C1ex6u3Uaa',
-    'port': '3306'
-}
 
 @app.route('/charge_account', methods=['POST'])
 def charge_account():
     data = request.json
     phone_number = data['phone_number']
     try:
-        amount = float(data['amount'])  # Convert string to float
+        amount = float(data['amount'])
     except ValueError:
         return jsonify({'message': 'Invalid amount format'}), 400
 
@@ -27,14 +28,12 @@ def charge_account():
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
         
-        # Record the transaction
         cursor.execute(
             "INSERT INTO transactions (transaction_id, phone_number, amount, timestamp, status, customer_name) "
             "VALUES (UUID(), %s, %s, NOW(), 'completed', 'some_customer_name')",
             (phone_number, amount)
         )
         
-        # Update the balance in the account_balances table
         cursor.execute(
             "INSERT INTO account_balances (phone_number, balance, last_updated) "
             "VALUES (%s, %s, NOW()) "
@@ -51,12 +50,11 @@ def charge_account():
             connection.close()
     return jsonify({'message': 'Account charged successfully'}), 200
 
-    
 @app.route('/check_account', methods=['POST'])
 def check_account():
     data = request.json
     phone_number = data['phone_number']
-    # Query the database for the amount
+    
     try:
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
@@ -65,14 +63,15 @@ def check_account():
             (phone_number,)
         )
         result = cursor.fetchone()
-        cursor.close()
-        connection.close()
-        connection.close()
         total_amount = result[0] if result else 0
         return jsonify({'amount': total_amount}), 200
     except Error as e:
         print(f'Error: {e}')
         return jsonify({'message': 'Failed to check account'}), 500
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
 
 if __name__ == '__main__':
     app.run(debug=True)
