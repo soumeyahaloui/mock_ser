@@ -15,6 +15,11 @@ db_config = {
 
 app = Flask(__name__)
 
+@app.route('/')
+def home():
+    return jsonify({'message': 'Service is running'}), 200
+
+
 @app.route('/charge_account', methods=['POST'])
 def charge_account():
     data = request.json
