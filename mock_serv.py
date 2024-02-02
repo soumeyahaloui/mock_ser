@@ -3,6 +3,10 @@ import mysql.connector
 from mysql.connector import Error
 from time import sleep
 import os  # Import os module to access environment variables
+import logging
+
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+
 
 # Database configuration (use environment variables)
 db_config = {
@@ -60,9 +64,11 @@ def charge_account():
 @app.route('/check_account', methods=['POST'])
 def check_account():
     data = request.json
-    phone_number = data['phone_number']
+    phone_number = data.get('phone_number')
+    if not phone_number:
+        return jsonify({'message': 'Phone number is required'}), 400
+    
     connection = None
-
     try:
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
@@ -71,15 +77,22 @@ def check_account():
             (phone_number,)
         )
         result = cursor.fetchone()
-        total_amount = result[0] if result else 0
-        return jsonify({'amount': total_amount}), 200
+        if result:
+            total_amount = result[0]
+            return jsonify({'amount': total_amount}), 200
+        else:
+            return jsonify({'message': 'No data found for the given phone number'}), 404
     except Error as e:
-        print(f'Error: {e}')
-        return jsonify({'message': 'Failed to check account'}), 500
+        app.logger.error(f'Error connecting to MySQL Database: {e}')
+        return jsonify({'message': 'Failed to check account', 'error': str(e)}), 500
+    except Exception as e:
+        app.logger.error(f'Unexpected error: {e}')
+        return jsonify({'message': 'An unexpected error occurred', 'error': str(e)}), 500
     finally:
-        if connection.is_connected():
+        if connection and connection.is_connected():
             cursor.close()
             connection.close()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
