@@ -8,13 +8,12 @@ import logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 
-# Database configuration (use environment variables)
 db_config = {
-    'host': os.getenv('DB_HOST', ''),  # Replace 'default_host' with your default or leave blank
-    'database': os.getenv('DB_NAME', ''),  # Replace 'default_database' with your default or leave blank
-    'user': os.getenv('DB_USER', ''),  # Replace 'default_user' with your default or leave blank
-    'password': os.getenv('DB_PASSWORD', ''),  # Replace 'default_password' with your default or leave blank
-    'port': os.getenv('DB_PORT', '3306')  # Default MySQL port; adjust if necessary
+    'host': os.getenv('DB_HOST'),
+    'database': os.getenv('DB_NAME'),
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'port': os.getenv('DB_PORT', '3306')
 }
 
 app = Flask(__name__)
