@@ -5,23 +5,18 @@ from time import sleep
 import os  # Import os module to access environment variables
 import logging
 
+
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 
 db_config = {
-    'host': os.getenv('DB_HOST'),
-    'database': os.getenv('DB_NAME'),
-    'user': os.getenv('DB_USER'),
-    'password': os.getenv('DB_PASSWORD'),
+    'host': 'sql11.freesqldatabase.com',
+    'database': 'sql11681109',
+    'user': 'sql11681109',
+    'password': 'C1ex6u3Uaa',
     'port': os.getenv('DB_PORT', '3306')
 }
 
-# Add these print statements to check the values
-print(f"DB_HOST: {os.getenv('DB_HOST')}")
-print(f"DB_USER: {os.getenv('DB_USER')}")
-print(f"DB_PASSWORD: {os.getenv('DB_PASSWORD')}")
-print(f"DB_NAME: {os.getenv('DB_NAME')}")
-print(f"DB_PORT: {os.getenv('DB_PORT', '3306')}")
 
 
 app = Flask(__name__)
