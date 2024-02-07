@@ -95,6 +95,36 @@ def check_account():
             cursor.close()
             connection.close()
 
+@app.route('/update_balance', methods=['POST'])
+def update_balance():
+    data = request.json
+    phone_number = data.get('phone_number')
+    new_total_amount = data.get('new_total_amount')
+
+    if not phone_number or not new_total_amount:
+        return jsonify({'message': 'Phone number and new total amount are required'}), 400
+    
+    connection = None
+    try:
+        connection = mysql.connector.connect(**db_config)
+        cursor = connection.cursor()
+        
+        cursor.execute(
+            "UPDATE account_balances SET balance = %s, last_updated = NOW() WHERE phone_number = %s",
+            (new_total_amount, phone_number)
+        )
+        
+        connection.commit()
+        return jsonify({'message': 'Account balance updated successfully'}), 200
+    except Error as e:
+        return jsonify({'message': 'Failed to update account balance', 'error': str(e)}), 500
+    finally:
+        if connection and connection.is_connected():
+            cursor.close()
+            connection.close()
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
