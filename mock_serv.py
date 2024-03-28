@@ -110,7 +110,7 @@ def update_balance():
         cursor = connection.cursor()
         
         cursor.execute(
-            "UPDATE account_balances SET balance = %s, last_updated = NOW() WHERE phone_number = %s",
+            "UPDATE users SET balance = %s WHERE phone_number = %s",
             (new_total_amount, phone_number)
         )
         
