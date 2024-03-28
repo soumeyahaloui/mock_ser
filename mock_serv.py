@@ -11,9 +11,9 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(nam
 
 db_config = {
     'host': 'sql11.freesqldatabase.com',
-    'database': 'sql11681109',
-    'user': 'sql11681109',
-    'password': 'C1ex6u3Uaa',
+    'database': 'sql11694019',
+    'user': 'sql11694019',
+    'password': 'wIJB3Bvi5t',
     'port': os.getenv('DB_PORT', '3306')
 }
 
@@ -41,17 +41,16 @@ def charge_account():
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
         
+         # Check if the phone number exists in the users table
+        cursor.execute("SELECT phone_number FROM users WHERE phone_number = %s", (phone_number,))
+        user_exists = cursor.fetchone()
+        if not user_exists:
+            return jsonify({'message': 'Phone number does not exist in the users table'}), 404
+
+        # Insert the transaction into the users table
         cursor.execute(
-            "INSERT INTO transactions (transaction_id, phone_number, amount, timestamp, status, customer_name) "
-            "VALUES (UUID(), %s, %s, NOW(), 'completed', 'some_customer_name')",
-            (phone_number, amount)
-        )
-        
-        cursor.execute(
-            "INSERT INTO account_balances (phone_number, balance, last_updated) "
-            "VALUES (%s, %s, NOW()) "
-            "ON DUPLICATE KEY UPDATE balance = balance + VALUES(balance), last_updated = NOW()",
-            (phone_number, amount)
+            "UPDATE users SET balance = balance + %s WHERE phone_number = %s",
+            (amount, phone_number)
         )
         
         connection.commit()
