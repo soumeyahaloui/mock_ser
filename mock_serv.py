@@ -112,6 +112,9 @@ def update_balance():
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
         
+        # Log the SQL query executed for updating the balance
+        app.logger.info(f"SQL Query: UPDATE users SET balance = {new_total_amount} WHERE phone_number = '{phone_number}'")
+        
         cursor.execute(
             "UPDATE users SET balance = %s WHERE phone_number = %s",
             (new_total_amount, phone_number)
@@ -126,8 +129,6 @@ def update_balance():
             cursor.close()
             connection.close()
 
-if __name__ == '__main__':
-    app.run(debug=True)
 
 if __name__ == '__main__':
     app.run(debug=True)
