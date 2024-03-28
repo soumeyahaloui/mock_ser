@@ -74,13 +74,14 @@ def check_account():
         connection = mysql.connector.connect(**db_config)
         cursor = connection.cursor()
         cursor.execute(
-            "SELECT SUM(amount) FROM transactions WHERE phone_number = %s GROUP BY phone_number",
+            "SELECT balance FROM users WHERE phone_number = %s",
             (phone_number,)
         )
         result = cursor.fetchone()
         if result:
-            total_amount = result[0]
-            return jsonify({'amount': total_amount}), 200
+            balance = result[0]
+            return jsonify({'balance': balance}), 200
+
         else:
             return jsonify({'message': 'No data found for the given phone number'}), 404
     except Error as e:
