@@ -40,20 +40,22 @@ class CustomScreen(Screen):
         # Add layout on top of the background
         self.add_widget(layout)
 
+
     def check_account(self, instance):
         phone_number = self.phone_number_input.text
         try:
             response = requests.post('https://mock-server-atvi.onrender.com//check_account', json={'phone_number': phone_number})
             if response.ok:
-                total_amount = response.json().get('amount', 0)
+                balance = response.json().get('balance', 0)  # Use the correct key 'balance'
                 popup = Popup(title='Account Balance',
-                              content=Label(text=f'Balance: {total_amount}'),
-                              size_hint=(None, None), size=(200, 200))
+                            content=Label(text=f'Balance: {balance}'),  # Update here as well
+                            size_hint=(None, None), size=(200, 200))
                 popup.open()
             else:
                 print('Failed to check account')
         except requests.RequestException as e:
             print(f'Request failed: {e}')
+
 
     def on_start(self):
         charge_account_btn = self.ids['charge_account_btn']  # Ensure you have an id for your button in the kv language
