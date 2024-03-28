@@ -77,11 +77,14 @@ def check_account():
             "SELECT balance FROM users WHERE phone_number = %s",
             (phone_number,)
         )
+        
+        # Log the SQL query executed
+        app.logger.info(f"SQL Query: SELECT balance FROM users WHERE phone_number = '{phone_number}'")
+        
         result = cursor.fetchone()
         if result:
             balance = result[0]
             return jsonify({'balance': balance}), 200
-
         else:
             return jsonify({'message': 'No data found for the given phone number'}), 404
     except Error as e:
