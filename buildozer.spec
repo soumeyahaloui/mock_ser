@@ -4,10 +4,10 @@
 title = TeleCom
 
 # (str) Package name
-package.name = myapp
+package.name = telecom
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.test
+package.domain = com.telecom.app
 
 # (str) Source code where the main.py live
 source.dir = .
