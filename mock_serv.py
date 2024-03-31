@@ -12,9 +12,9 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s %(nam
 
 db_config = {
     'host': 'sql11.freesqldatabase.com',
-    'database': 'sql11694019',
-    'user': 'sql11694019',
-    'password': 'wIJB3Bvi5t',
+    'database': 'sql11695666',
+    'user': 'sql11695666',
+    'password': '5Gy4bRlFwc',
     'port': os.getenv('DB_PORT', '3306')
 }
 
